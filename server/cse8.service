@@ -1,0 +1,19 @@
+[Unit]
+Description=CSE-8 awards API
+After=network.target
+
+[Service]
+User=cse8
+WorkingDirectory=/opt/cse8
+EnvironmentFile=/etc/cse8.env
+ExecStart=/usr/bin/node /opt/cse8/server.mjs
+Restart=always
+RestartSec=2
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+ReadWritePaths=/var/lib/cse8
+
+[Install]
+WantedBy=multi-user.target

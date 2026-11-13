@@ -1,0 +1,504 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#07060d">
+<title>CSE-8 Memory Lane</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Caveat:wght@500;600&family=Chakra+Petch:wght@400;500;600&family=Outfit:wght@300;400;500&display=swap">
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<nav class="hud" aria-label="Site"><a href="/">← The class</a><a class="me" id="my-page" href="/" hidden>My page</a></nav>
+
+<main>
+  <section class="scene" id="hero" style="--len:2.6">
+    <div class="stage">
+      <div class="ph" id="hero-ph"></div>
+      <div class="dim"></div>
+      <div class="shade"></div>
+      <div class="name-wrap gut">
+        <div class="kicker">CSE-8 · Awards Night</div>
+        <div class="big-name" id="first"></div>
+        <div class="kicker">Scanned from your certificate</div>
+      </div>
+      <div class="after gut">
+        <h1>You made it.</h1>
+        <p>Keep scrolling. This one's all about you.</p>
+      </div>
+      <div class="scroll-hint">SCROLL</div>
+    </div>
+  </section>
+
+  <section class="scene" id="award" style="--len:2.6">
+    <div class="stage gut">
+      <div class="award-inner">
+        <div class="kicker">Officially awarded to <span id="fullname"></span></div>
+        <h2 class="award-title" id="award-title"></h2>
+        <p class="why" id="why"></p>
+        <div class="meta">
+          <span class="tag">Batch <b>CSE-8</b></span>
+          <span class="tag">Status <b>Graduated</b></span>
+        </div>
+        <div class="others" id="others"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="scene" id="cert" style="--len:1.8">
+    <div class="stage gut">
+      <div class="cert-wrap">
+        <div class="kicker">Your certificate</div>
+        <button type="button" class="cert-card" id="cert-open" aria-label="View the certificate full size"><img id="cert-img" alt="" decoding="async"></button>
+        <div class="cert-actions cert-hint">
+          <span class="demo-note">Tap to view full size</span>
+          <button type="button" class="cta ghost" id="cert-share" hidden>Share certificate</button>
+          <a class="cta ghost" id="cert-save" download>Save certificate</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <dialog class="sheet full" id="cert-view" aria-label="Certificate">
+    <img id="cert-full" alt="">
+    <div class="dlg-nav" style="justify-content:center"><button type="button" id="cert-close">Close</button></div>
+  </dialog>
+
+  <!-- shown on your own page until you log in on this phone -->
+  <section class="strip gut" id="unlock" hidden>
+    <div class="kicker">Your memory board</div>
+    <h2>Unlock your board</h2>
+    <p>Set or enter your password to add photos and sign notes. Anyone can still see your page.</p>
+    <button class="cta" id="unlock-btn" type="button">Unlock</button>
+  </section>
+
+  <dialog class="sheet" id="pw" aria-labelledby="pw-h">
+    <form id="pw-form" class="pw-card">
+      <div class="kicker" id="pw-kicker">Your board</div>
+      <h2 id="pw-h">Protect your board</h2>
+      <p id="pw-text"></p>
+      <input type="password" id="pw-in" minlength="4" maxlength="100" required autocomplete="current-password" aria-labelledby="pw-h">
+      <p class="demo-note" id="pw-err" role="alert"></p>
+      <div class="dlg-nav"><button type="button" id="pw-skip">Just look around</button><button type="submit" class="go" id="pw-go">Continue</button></div>
+    </form>
+  </dialog>
+
+  <!-- only the board's owner sees this -->
+  <section class="strip gut" id="owner" aria-labelledby="h-add" hidden>
+    <div class="kicker">Your memory board</div>
+    <h2 id="h-add">This board is yours</h2>
+    <p id="add-text"></p>
+    <div class="slots" id="empty-slots" aria-hidden="true">
+      <div class="slot"><b>01</b>Memory 01</div>
+      <div class="slot"><b>02</b>Memory 02</div>
+      <div class="slot"><b>03+</b>Highlight reel</div>
+    </div>
+    <div class="mine" id="mine"></div>
+    <button class="cta" id="add-btn" type="button">+ Add your memories</button>
+    <input type="file" id="file" accept="image/*" multiple hidden>
+    <span class="demo-note">Only you can add photos here. Everyone who visits sees them.</span>
+  </section>
+
+  <div id="zooms"></div>
+
+  <section class="scene" id="reel" style="--len:3.4" hidden>
+    <div class="stage">
+      <div class="reel-head gut"><div class="kicker">More of you</div><h2>The highlight reel</h2></div>
+      <div class="track" id="track"></div>
+    </div>
+  </section>
+
+  <section class="board-sec gut" aria-labelledby="h-notes">
+    <div class="board-head">
+      <div><div class="kicker">Notes from the class</div><h2 class="sec-h" id="h-notes">Stuck on your board</h2></div>
+      <button class="cta ghost" id="write" type="button">+ Leave a note</button>
+    </div>
+    <div class="board armed" id="board"></div>
+  </section>
+
+  <dialog class="sheet" id="view" aria-label="Note">
+    <div class="big-postit" id="v-card"><div id="v-txt"></div><div class="by" id="v-by"></div></div>
+    <div class="dlg-nav"><button type="button" id="v-prev">← Prev</button><button type="button" id="v-del" hidden>Remove</button><button type="button" id="v-close">Close</button><button type="button" id="v-next">Next →</button></div>
+  </dialog>
+
+  <dialog class="sheet" id="compose" aria-label="Write a note">
+    <form id="c-form">
+      <div class="big-postit" id="c-card">
+        <textarea id="c-txt" maxlength="300" required placeholder="Write something they'll smile at in ten years…"></textarea>
+        <div class="swatches" id="sw" role="group" aria-label="Note colour"></div>
+        <div class="by" id="c-by"></div>
+      </div>
+      <div class="dlg-nav"><button type="button" id="c-cancel">Cancel</button><span class="demo-note" id="c-count">0 / 300</span><button type="submit" class="go" id="c-go">Stick it</button></div>
+    </form>
+  </dialog>
+
+  <dialog class="sheet photo" id="pv" aria-label="Memory">
+    <div class="photo-box">
+      <img id="pv-img" alt="">
+      <div class="kicker" id="pv-num"></div>
+      <h2 class="photo-title" id="pv-title"></h2>
+      <form class="title-edit" id="pv-form" hidden>
+        <input id="pv-in" maxlength="60" placeholder="Give this memory a title" aria-label="Memory title">
+        <button type="submit" class="cta" id="pv-save">Save</button>
+      </form>
+    </div>
+    <div class="dlg-nav"><button type="button" id="pv-prev">← Prev</button><button type="button" id="pv-close">Close</button><button type="button" id="pv-next">Next →</button></div>
+  </dialog>
+
+  <section id="msg">
+    <div class="msg-inner gut">
+      <div class="letter">
+        <div class="kicker">A message from your CR</div>
+        <div id="lines" style="display:grid;gap:16px"></div>
+        <div class="sig"><span class="who">Piyush Singh</span><span class="role">Class Representative · CSE-8</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="film-sec gut">
+    <div class="kicker">The CSE-8 Film</div>
+    <h2 id="film-h">Premieres after the ceremony</h2>
+    <div class="film" id="film"><div class="ph" style="--c1:#ff3d7f;--c2:#2b0f4a" data-label="Compilation · YouTube"></div><div class="btn" aria-hidden="true"></div></div>
+    <p id="film-p">Every photo and video the class sent, cut into one film. This same link will play it once it's out.</p>
+  </section>
+  <footer class="gut">CSE-8 · made by your CR</footer>
+</main>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+// paste the YouTube link here once the film is out
+const FILM_URL = "";
+
+const NOTE_COLORS = ["#ffd166", "#ff8fb1", "#7ef0ff", "#c9a7ff", "#ffb36b", "#9dffcf"];
+const TILTS = ["-3deg", "2deg", "-1deg", "3deg", "-2deg", "1.5deg", "-2.5deg", "2.5deg"];
+const $ = id => document.getElementById(id);
+const esc = s => s.replace(/[&<>"']/g, ch => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[ch]);
+const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const store = {
+  get(k) { try { return JSON.parse(localStorage.getItem(k)); } catch { return null; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} },
+};
+const api = (path, body) => fetch(path, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body) })
+  .then(async r => { const d = await r.json().catch(() => ({})); if (!r.ok) throw Object.assign(new Error(d.error || "Something went wrong"), { relogin: d.relogin }); return d; });
+// the password was reset or the session is stale: forget it and ask again
+function onErr(err) { if (err.relogin && ME) { delete ME.t; saveMe(); askPassword(); } else toast(err.message); }
+let toastT;
+function toast(msg) { const t = $("toast"); t.textContent = msg; t.classList.add("on"); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove("on"), 3500); }
+
+const ID = decodeURIComponent(location.pathname.split("/").filter(Boolean)[0] || "");
+let ME = store.get("cse8-me");          // {id, k, name, t}: whoever scanned their own certificate here; t = logged in with their password
+const ADMIN = store.get("cse8-admin");
+let S, photos = [], notes = [], caps = {}, capsUrls = [];
+const isMine = () => ME?.id === ID;
+const isOwner = () => isMine() && !!ME.t;
+const saveMe = () => store.set("cse8-me", ME);
+const auth = () => (ADMIN ? { admin: ADMIN } : {});
+const MAX_PHOTOS = 40;
+// boards are cached for 2 minutes; whoever just changed this one skips the cache for a bit so they see it
+const touch = () => store.set(`cse8-touched-${ID}`, Date.now());
+const fresh = () => Date.now() - (store.get(`cse8-touched-${ID}`) || 0) < 180000;
+
+// scroll engine: each .scene gets --p from 0 to 1 while its sticky stage is pinned
+let scenes = [];
+function update() {
+  if (reduce) return;
+  const vh = document.documentElement.clientHeight;
+  for (const sc of scenes) {
+    if (!sc.offsetHeight) continue;
+    const r = sc.getBoundingClientRect();
+    if (r.bottom < -vh || r.top > vh * 2) continue;
+    const p = Math.min(1, Math.max(0, -r.top / (r.height - vh)));
+    sc.style.setProperty("--p", p.toFixed(4));
+    if (sc.id === "reel") {
+      const t = $("track"), extra = t.scrollWidth - innerWidth + 40;
+      t.style.setProperty("--x", `${-Math.max(0, extra) * p}px`);
+    }
+  }
+}
+const rescan = () => { scenes = [...document.querySelectorAll(".scene")]; update(); };
+let ticking = false;
+addEventListener("scroll", () => { if (!ticking) { ticking = true; requestAnimationFrame(() => { update(); ticking = false; }); } }, { passive: true });
+addEventListener("resize", update);
+
+// message paragraphs fade in one by one as they scroll into view
+let letterIO;
+function observeLetter() {
+  const els = document.querySelectorAll("#msg .line, #msg .sig");
+  if (reduce || !("IntersectionObserver" in window)) { els.forEach(e => e.classList.add("on")); return; }
+  letterIO = new IntersectionObserver(ents => ents.forEach(e => { if (e.isIntersecting) { e.target.classList.add("on"); letterIO.unobserve(e.target); } }), { rootMargin: "0px 0px -12% 0px" });
+  els.forEach(e => letterIO.observe(e));
+}
+
+function render() {
+  const first = S.name.split(" ")[0];
+  document.title = `${S.name} · CSE-8`;
+  $("first").textContent = first;
+  $("first").style.setProperty("--chars", Math.max(5, first.length));
+  $("fullname").textContent = S.name;
+  $("why").textContent = S.why;
+  const tags = list => list.map(a => `<span class="tag"><b>${esc(a)}</b></span>`).join("");
+  const extra = S.others.length - 8;
+  $("others").innerHTML = S.others.length ? `<span class="tag">Also won</span>` + tags(S.others.slice(0, 8)) + (extra > 0 ? `<button type="button" class="tag" id="more-awards" style="cursor:pointer;font:inherit">+${extra} more</button>` : "") : "";
+  if (extra > 0) $("more-awards").onclick = e => e.target.outerHTML = tags(S.others.slice(8));
+  // same background (and mirroring) as their printed certificate
+  $("hero-ph").style.cssText = `--img:url('/bg/${encodeURI(S.bg)}');--flip:${S.flip ? -1 : 1}`;
+  const words = S.award.split(" ");
+  $("award-title").style.setProperty("--n", words.length);
+  $("award-title").innerHTML = words.map((w, i) => `<span class="w${S.hot.includes(w) ? " hot" : ""}" style="--i:${i}">${esc(w)}</span>`).join(" ");
+  $("lines").innerHTML = S.msg.map(l => `<p class="line">${esc(l)}</p>`).join("");
+  observeLetter();
+  $("cert-img").src = $("cert-full").src = $("cert-save").href = `/certs/${ID}.jpg`;
+  $("cert-save").download = `${S.name} - CSE-8 certificate.jpg`;
+  $("cert-img").alt = $("cert-full").alt = `${S.name}'s certificate: ${S.award}`;
+  if (!isMine()) {
+    $("h-notes").textContent = `Stuck on ${first}'s board`;
+    document.querySelector("#hero .name-wrap .kicker:last-child").textContent = "Class of CSE-8";
+    document.querySelector("#cert .kicker").textContent = `${first}'s certificate`;
+  }
+  if (FILM_URL) {
+    $("film").outerHTML = `<a class="film" id="film" href="${esc(FILM_URL)}" target="_blank" rel="noopener">${$("film").innerHTML}</a>`;
+    $("film-h").textContent = "Watch the film";
+    $("film-p").textContent = "Every photo and video the class sent, cut into one film.";
+  }
+  rescan();
+}
+
+// photo 1 → Memory 01, 2 → Memory 02, 3+ → highlight reel
+const bg = url => `background:center / cover no-repeat url('${url}')`;
+// the whole photo, with a blurred copy filling any space around it
+const fit = url => `--img:url('${esc(url)}')`;
+function fill() {
+  $("zooms").innerHTML = photos.slice(0, 2).map((p, i) => `
+    <section class="scene zoom" style="--len:2.2"><div class="stage">
+      <button type="button" class="frame" data-pv="${i}" aria-label="Open memory ${i + 1}"><div class="fit" style="${fit(p.url)}"></div></button>
+      <div class="cap gut"><div class="num">Memory 0${i + 1}</div>${caps[p.url] ? `<h2>${esc(caps[p.url])}</h2>` : ""}</div>
+    </div></section>`).join("");
+  $("track").innerHTML = photos.slice(2).map((p, i) => `<figure class="card" style="margin:0"><button type="button" class="fill-btn" data-pv="${i + 2}" aria-label="Open memory ${i + 3}"><div class="fit" style="${fit(p.url)}"></div></button>${caps[p.url] ? `<figcaption class="label">${esc(caps[p.url])}</figcaption>` : ""}</figure>`).join("");
+  $("reel").hidden = photos.length < 3;
+  if (isOwner()) {
+    const n = photos.length;
+    $("owner").hidden = false;
+    $("empty-slots").hidden = n > 0;
+    $("h-add").textContent = n ? "Your memories" : "This board is yours";
+    $("add-text").textContent = n ? `${n} photo${n === 1 ? "" : "s"} on your board. The first two get their own scenes, the rest go in your highlight reel.` : "Add your favourite photos from these four years. They fill this page and stay here.";
+    $("add-btn").textContent = n ? "+ Add more" : "+ Add your memories";
+    $("mine").innerHTML = photos.map((p, i) => `<figure style="${bg(p.url)}" data-pv="${i}" title="${esc(caps[p.url] || "Tap to add a title")}"><span>${String(i + 1).padStart(2, "0")}</span><button type="button" data-url="${esc(p.url)}" aria-label="Remove photo ${i + 1}">×</button></figure>`).join("");
+  }
+  rescan();
+}
+
+// shrink on the phone before upload: 1600px JPEG keeps storage small
+function compress(file) {
+  return new Promise((resolve, reject) => {
+    const img = new Image(), url = URL.createObjectURL(file);
+    img.onload = () => {
+      const scale = Math.min(1, 1600 / Math.max(img.naturalWidth, img.naturalHeight));
+      const c = document.createElement("canvas");
+      c.width = Math.round(img.naturalWidth * scale); c.height = Math.round(img.naturalHeight * scale);
+      c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
+      URL.revokeObjectURL(url);
+      c.toBlob(b => b ? resolve(b) : reject(new Error("Couldn't read that photo")), "image/jpeg", .82);
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error("Couldn't read that photo")); };
+    img.src = url;
+  });
+}
+$("add-btn").onclick = () => $("file").click();
+$("file").addEventListener("change", async e => {
+  const files = [...e.target.files].filter(f => f.type.startsWith("image/") || /\.(heic|heif)$/i.test(f.name));
+  e.target.value = "";
+  const btn = $("add-btn"); btn.disabled = true;
+  let done = 0;
+  for (const f of files) {
+    if (photos.length >= MAX_PHOTOS) { toast(`Board is full (${MAX_PHOTOS} photos max)`); break; }
+    btn.textContent = `Uploading ${done + 1} of ${files.length}…`;
+    try {
+      const body = await compress(f);
+      const r = await fetch("/api/photo", { method: "POST", headers: { "content-type": "image/jpeg", "x-s": ME.id, "x-k": ME.k, "x-t": ME.t }, body });
+      const d = await r.json().catch(() => ({}));
+      if (!r.ok) throw Object.assign(new Error(d.error || "Upload failed"), { relogin: d.relogin });
+      photos.push({ url: d.url }); done++;
+    } catch (err) { onErr(err); if (err.relogin) break; }
+  }
+  btn.disabled = false;
+  if (done) touch();
+  if (done) toast(`${done} photo${done === 1 ? "" : "s"} added`);
+  fill();
+});
+$("mine").addEventListener("click", async e => {
+  const b = e.target.closest("button[data-url]"); if (!b || !confirm("Remove this photo from your board?")) return;
+  try { await api("/api/delete", { url: b.dataset.url, s: ME.id, k: ME.k, t: ME.t }); photos = photos.filter(p => p.url !== b.dataset.url); touch(); fill(); }
+  catch (err) { onErr(err); }
+});
+
+// notes board
+const board = $("board");
+function renderBoard() {
+  board.innerHTML = notes.length
+    ? notes.map((n, i) => `<button type="button" class="postit" data-i="${i}" style="--c:${n.c};--r:${TILTS[i % 8]};--i:${i}" aria-label="Note from ${esc(n.name)}"><span class="txt">${esc(n.text)}</span><span class="by">— ${esc(n.name)}</span></button>`).join("")
+    : `<p class="board-empty">${isMine() ? "Your classmates' notes will land here." : "No notes yet. Be the first to stick one."}</p>`;
+}
+if (reduce || !("IntersectionObserver" in window)) board.classList.remove("armed");
+else new IntersectionObserver((ents, io) => { if (ents[0].isIntersecting) { board.classList.replace("armed", "in"); io.disconnect(); } }, { threshold: .2 }).observe(board);
+
+let cur = 0;
+function showNote(i) {
+  cur = (i + notes.length) % notes.length;
+  const n = notes[cur];
+  $("v-card").style.setProperty("--c", n.c);
+  $("v-txt").textContent = n.text; $("v-by").textContent = "— " + n.name;
+  $("v-del").hidden = !(ADMIN || isOwner() || (n.from === ME?.id && ME.t));
+  const card = $("v-card"); card.style.animation = "none"; card.offsetWidth; card.style.animation = "";
+  if (!$("view").open) $("view").showModal();
+}
+board.addEventListener("click", e => { const p = e.target.closest(".postit"); if (p) showNote(+p.dataset.i); });
+$("v-prev").onclick = () => showNote(cur - 1);
+$("v-next").onclick = () => showNote(cur + 1);
+$("v-close").onclick = () => $("view").close();
+$("v-del").onclick = async () => {
+  if (!confirm("Remove this note?")) return;
+  const n = notes[cur];
+  try { await api("/api/delete", { url: n.url, s: ME?.id, k: ME?.k, t: ME?.t, ...auth() }); notes.splice(cur, 1); touch(); renderBoard(); $("view").close(); }
+  catch (err) { onErr(err); }
+};
+for (const d of document.querySelectorAll("dialog")) d.addEventListener("click", e => { if (e.target === d) d.close(); });
+
+let pick = NOTE_COLORS[0];
+$("sw").innerHTML = NOTE_COLORS.map(c => `<button type="button" style="--c:${c}" data-c="${c}" aria-label="Colour"></button>`).join("");
+function setPick(c) { pick = c; $("c-card").style.setProperty("--c", c); $("sw").querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", b.dataset.c === c)); }
+$("sw").addEventListener("click", e => { const b = e.target.closest("button"); if (b) setPick(b.dataset.c); });
+$("write").onclick = () => {
+  if (!ME) return toast("Scan the QR on your own certificate first. That's how your note gets signed.");
+  if (!ME.t) return askPassword();
+  $("c-txt").value = ""; $("c-count").textContent = "0 / 300"; $("c-by").textContent = `Signed as ${ME.name}`;
+  setPick(NOTE_COLORS[notes.length % 6]); $("compose").showModal(); $("c-txt").focus();
+};
+$("c-cancel").onclick = () => $("compose").close();
+$("c-txt").addEventListener("input", e => { $("c-count").textContent = `${e.target.value.length} / 300`; });
+$("c-form").addEventListener("submit", async e => {
+  e.preventDefault();
+  const text = $("c-txt").value.trim(); if (!text) return;
+  $("c-go").disabled = true;
+  try {
+    const n = await api("/api/note", { to: ID, from: ME.id, k: ME.k, t: ME.t, text, c: pick });
+    notes.unshift(n); touch(); renderBoard(); $("compose").close();
+    board.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "center" });
+  } catch (err) { $("compose").close(); onErr(err); }
+  $("c-go").disabled = false;
+});
+
+// photo viewer: tap any memory to see the exact image; the owner can title it here
+let pvAt = 0;
+function openPhoto(i) {
+  if (!photos.length) return;
+  pvAt = (i + photos.length) % photos.length;
+  const p = photos[pvAt], title = caps[p.url] || "";
+  $("pv-img").src = p.url;
+  $("pv-img").alt = title || `Memory ${pvAt + 1}`;
+  $("pv-num").textContent = `Memory ${String(pvAt + 1).padStart(2, "0")}`;
+  $("pv-title").textContent = title;
+  $("pv-title").hidden = isOwner() || !title;
+  $("pv-form").hidden = !isOwner();
+  $("pv-in").value = title;
+  $("pv-prev").hidden = $("pv-next").hidden = photos.length < 2;
+  if (!$("pv").open) $("pv").showModal();
+}
+document.addEventListener("click", e => {
+  if (e.target.closest("button[data-url]")) return;   // the × on a thumbnail removes, it doesn't open
+  const el = e.target.closest("[data-pv]");
+  if (el) openPhoto(+el.dataset.pv);
+});
+$("pv-prev").onclick = () => openPhoto(pvAt - 1);
+$("pv-next").onclick = () => openPhoto(pvAt + 1);
+$("pv-close").onclick = () => $("pv").close();
+$("pv-form").addEventListener("submit", async e => {
+  e.preventDefault();
+  const url = photos[pvAt].url, next = {};
+  for (const p of photos) if (caps[p.url]) next[p.url] = caps[p.url];   // drops titles of removed photos
+  next[url] = $("pv-in").value.trim();
+  $("pv-save").disabled = true;
+  try {
+    const r = await api("/api/caption", { s: ME.id, k: ME.k, t: ME.t, caps: next, prev: capsUrls });
+    caps = r.caps; capsUrls = [r.capsUrl]; touch(); fill();
+    toast(caps[url] ? "Title saved" : "Title removed");
+    openPhoto(pvAt + 1 < photos.length ? pvAt + 1 : pvAt);
+  } catch (err) { $("pv").close(); onErr(err); }
+  $("pv-save").disabled = false;
+});
+
+$("cert-open").onclick = () => $("cert-view").showModal();
+// shares the website copy, which has no QR on it
+$("cert-share").onclick = async () => {
+  try {
+    const blob = await fetch(`/certs/${ID}.jpg`).then(r => r.blob());
+    const file = new File([blob], `${S.name} - CSE-8 certificate.jpg`, { type: "image/jpeg" });
+    await navigator.share({ files: [file], title: `${S.name} · CSE-8`, text: S.award });
+  } catch (err) { if (err.name !== "AbortError") toast("Couldn't share. Use Save certificate instead."); }
+};
+if (navigator.canShare?.({ files: [new File([""], "c.jpg", { type: "image/jpeg" })] })) $("cert-share").hidden = false;
+
+// password: set on the first scan, typed again only on a new phone
+async function askPassword() {
+  if (!ME?.k) return;
+  let claimed = true;
+  try { claimed = (await api("/api/me", { s: ME.id, k: ME.k })).claimed; } catch {}
+  $("pw-form").dataset.mode = claimed ? "login" : "set";
+  $("pw-h").textContent = claimed ? `Welcome back, ${ME.name.split(" ")[0]}` : "Protect your board";
+  $("pw-text").textContent = claimed
+    ? "Enter your board password to add photos and sign notes on this phone. Forgot it? Ask Piyush to reset your board."
+    : "Set a password so only you can add photos and sign notes, even if someone else gets a photo of your certificate. You'll only need it again on a new phone.";
+  $("pw-in").autocomplete = claimed ? "current-password" : "new-password";
+  $("pw-in").placeholder = claimed ? "Your password" : "New password (4+ characters)";
+  $("pw-in").value = ""; $("pw-err").textContent = "";
+  if (!$("pw").open) $("pw").showModal();
+  $("pw-in").focus();
+}
+$("unlock-btn").onclick = askPassword;
+$("pw-skip").onclick = () => $("pw").close();
+$("pw-form").addEventListener("submit", async e => {
+  e.preventDefault();
+  const password = $("pw-in").value;
+  if ($("pw-form").dataset.mode === "set" && !confirm(`Set "${password}" as your password? Write it down somewhere.`)) return;
+  $("pw-go").disabled = true;
+  try {
+    const r = await api("/api/claim", { s: ME.id, k: ME.k, password });
+    ME.t = r.t; saveMe(); touch();
+    location.reload();
+  } catch (err) { $("pw-err").textContent = err.message; }
+  $("pw-go").disabled = false;
+});
+$("cert-close").onclick = () => $("cert-view").close();
+
+async function start() {
+  // the QR link carries ?k=; remember it on this device, then hide it from the address bar
+  const k = new URLSearchParams(location.search).get("k");
+  if (k) {
+    history.replaceState(null, "", location.pathname);
+    try {
+      const r = await api("/api/me", { s: ID, k });
+      // a new scan keeps an existing login on this phone; otherwise it waits for the password
+      if (r.ok) { ME = { id: ID, k, name: r.name, t: ME?.id === ID && ME.k === k ? ME.t : undefined }; saveMe(); }
+    } catch {}
+  } else if (ME?.t) {
+    try { const r = await api("/api/me", { s: ME.id, k: ME.k, t: ME.t }); if (!r.session) { delete ME.t; saveMe(); } } catch {}
+  }
+  const all = await fetch("/students.json").then(r => r.json());
+  S = all[ID];
+  if (!S) return location.replace("/");
+  if (ME && !isMine()) { $("my-page").hidden = false; $("my-page").href = `/${ME.id}`; }
+  $("write").hidden = isMine();
+  $("unlock").hidden = !isMine() || isOwner();
+  if (k && isMine() && !isOwner()) askPassword();
+  render(); renderBoard();
+  try {
+    const d = await fetch(`/api/board?s=${encodeURIComponent(ID)}${fresh() ? `&t=${Date.now()}` : ""}`).then(r => r.json());
+    photos = d.photos || []; notes = d.notes || []; caps = d.caps || {}; capsUrls = d.capsUrls || [];
+  } catch {}
+  fill(); renderBoard();
+}
+start();
+</script>
+</body>
+</html>

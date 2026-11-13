@@ -1,0 +1,6 @@
+[Unit]
+Description=Daily backup of CSE-8 photos, notes and passwords
+
+[Service]
+Type=oneshot
+ExecStart=/bin/sh -c 'mkdir -p /var/backups/cse8 && chmod 700 /var/backups/cse8 && tar -czf /var/backups/cse8/$(date +%%F).tar.gz -C /var/lib/cse8 data && find /var/backups/cse8 -name "*.tar.gz" -mtime +14 -delete'

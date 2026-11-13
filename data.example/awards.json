@@ -1,0 +1,39 @@
+[
+  {
+    "id": "aarav-mehta",
+    "name": "Aarav Mehta",
+    "main_award": "The Night Owl Award",
+    "other_awards": [
+      "Last Minute Legend",
+      "Canteen Regular",
+      "Best Debugger"
+    ],
+    "subtext": "",
+    "background": "backgrounds/class-photo.jpg",
+    "background_flipped": false
+  },
+  {
+    "id": "meera-iyer",
+    "name": "Meera Iyer",
+    "main_award": "Ms. Always Prepared",
+    "other_awards": [
+      "Notes Provider",
+      "Group Project Saviour"
+    ],
+    "subtext": "",
+    "background": "backgrounds/class-photo.jpg",
+    "background_flipped": false
+  },
+  {
+    "id": "kabir-singh",
+    "name": "Kabir Singh",
+    "main_award": "The Hype Machine",
+    "other_awards": [
+      "Fest Organiser",
+      "Loudest Laugh"
+    ],
+    "subtext": "",
+    "background": "backgrounds/class-photo.jpg",
+    "background_flipped": false
+  }
+]

@@ -1,0 +1,20 @@
+187-126-121-95.sslip.io {
+	encode gzip
+
+	handle /api/* {
+		reverse_proxy 127.0.0.1:3000
+	}
+
+	# photos, notes and titles only; passwords in auth/ are never served
+	handle /b/* {
+		root * /var/lib/cse8/data
+		header Cache-Control "public, max-age=31536000, immutable"
+		header X-Robots-Tag "noindex"
+		header X-Content-Type-Options "nosniff"
+		file_server
+	}
+
+	handle {
+		respond 404
+	}
+}

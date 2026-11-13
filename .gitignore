@@ -1,0 +1,19 @@
+# secrets: never commit
+.secret
+.admin
+.env*
+.vercel
+
+# real class data and anything generated from it (names, photos, private messages, QR keys)
+/public/students.json
+/public/certs/
+/public/bg/
+/api/_names.js
+qr/
+print/
+backup/
+migrate/
+blob-inventory.json
+
+node_modules/
+.DS_Store

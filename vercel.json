@@ -1,0 +1,27 @@
+{
+  "framework": null,
+  "buildCommand": "",
+  "outputDirectory": "public",
+  "cleanUrls": true,
+  "rewrites": [
+    {
+      "source": "/api/:path*",
+      "destination": "https://187-126-121-95.sslip.io/api/:path*"
+    },
+    {
+      "source": "/:id([a-z0-9-]+)",
+      "destination": "/student"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex"
+        }
+      ]
+    }
+  ]
+}

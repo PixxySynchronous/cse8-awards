@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#07060d">
+<title>CSE-8 Awards Night</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Caveat:wght@500;600&family=Chakra+Petch:wght@400;500;600&family=Outfit:wght@300;400;500&display=swap">
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<nav class="hud" aria-label="Site" id="nav" hidden><a class="me" id="my-page" href="/">My page →</a></nav>
+<main class="dir gut">
+  <div class="kicker">CSE-8 · Awards Night</div>
+  <h1>The Class</h1>
+  <p id="intro">Everyone's page from the night. Open a classmate's board to see their memories and stick a note on it.</p>
+  <input type="search" id="q" placeholder="Find a classmate…" aria-label="Find a classmate" autocomplete="off">
+  <div class="grid" id="grid"></div>
+</main>
+<footer class="gut">CSE-8 · made by your CR</footer>
+<div class="toast" id="toast" role="status"></div>
+<script>
+const $ = id => document.getElementById(id);
+const esc = s => s.replace(/[&<>"']/g, ch => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[ch]);
+const store = {
+  get(k) { try { return JSON.parse(localStorage.getItem(k)); } catch { return null; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} },
+};
+const ME = store.get("cse8-me");
+
+(async () => {
+  // /?admin=<key> once on your own phone turns on remove buttons everywhere
+  const admin = new URLSearchParams(location.search).get("admin");
+  if (admin) {
+    history.replaceState(null, "", "/");
+    const r = await fetch("/api/me", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ admin }) }).then(r => r.json()).catch(() => ({}));
+    if (r.ok) store.set("cse8-admin", admin);
+    const t = $("toast"); t.textContent = r.ok ? "Admin mode on for this device" : "Wrong admin key"; t.classList.add("on");
+  }
+  if (ME) { $("nav").hidden = false; $("my-page").href = `/${ME.id}`; $("intro").textContent = `Hi ${ME.name.split(" ")[0]}. Open a classmate's board to see their memories and stick a note on it.`; }
+  if (!ME) $("intro").textContent += " Scan the QR on your own certificate first so your notes are signed with your name.";
+
+  const all = Object.entries(await fetch("/students.json").then(r => r.json())).sort((a, b) => a[1].name.localeCompare(b[1].name));
+  $("grid").innerHTML = all.map(([id, s]) => `<a href="/${id}" data-q="${esc(s.name.toLowerCase())}"${ME?.id === id ? ' class="you"' : ""}><b>${esc(s.name)}</b><span>${esc(s.award)}</span></a>`).join("");
+  // admin: shows who has set a password and lets you reset one (their photos and notes stay)
+  const ADMIN = store.get("cse8-admin");
+  if (ADMIN) {
+    const post = body => fetch("/api/admin", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ admin: ADMIN, ...body }) }).then(r => r.json());
+    const { claimed = [] } = await post({ action: "claims" });
+    const when = Object.fromEntries(claimed.map(c => [c.id, c.at]));
+    $("intro").textContent = `Admin mode: ${claimed.length} of ${all.length} boards have a password. Reset one if its owner forgot it or someone else claimed it.`;
+    for (const a of $("grid").children) {
+      const id = a.getAttribute("href").slice(1), at = when[id];
+      a.insertAdjacentHTML("beforeend", at
+        ? `<span>🔒 since ${new Date(at).toLocaleString()} <button type="button" class="tag" data-reset="${id}" style="cursor:pointer;font:inherit">Reset</button></span>`
+        : `<span>No password yet</span>`);
+    }
+    $("grid").addEventListener("click", async e => {
+      const b = e.target.closest("[data-reset]"); if (!b) return;
+      e.preventDefault();
+      if (!confirm("Reset this board's password? Their photos and notes stay. Their next scan sets a new password.")) return;
+      const r = await post({ action: "reset", s: b.dataset.reset });
+      b.parentElement.textContent = r.ok ? "Reset. Next scan sets a new password." : "Reset failed";
+    });
+  }
+  $("q").addEventListener("input", e => {
+    const q = e.target.value.trim().toLowerCase();
+    for (const a of $("grid").children) a.hidden = !!q && !a.dataset.q.includes(q);
+  });
+})();
+</script>
+</body>
+</html>

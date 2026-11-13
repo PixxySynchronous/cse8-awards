@@ -1,0 +1,11 @@
+{
+  "name": "cse8-awards",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@vercel/blob": "^2.8.2"
+  },
+  "devDependencies": {
+    "qrcode": "^1.5.4"
+  }
+}

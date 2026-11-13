@@ -1,0 +1,16 @@
+.secret
+.admin
+build.py
+qr.mjs
+backup.mjs
+qr
+backup
+.env*
+qrmatrix.mjs
+print-cert.py
+print
+blob-inventory.json
+server
+migrate
+blob-inventory.json
+api
