@@ -168,8 +168,8 @@
 <div class="toast" id="toast" role="status"></div>
 
 <script>
-// paste the YouTube link here once the film is out
-const FILM_URL = "";
+// the class rewind film; tapping the player opens it on YouTube
+const FILM_URL = "https://youtu.be/hPt0tYO4uNM";
 
 const NOTE_COLORS = ["#ffd166", "#ff8fb1", "#7ef0ff", "#c9a7ff", "#ffb36b", "#9dffcf"];
 const TILTS = ["-3deg", "2deg", "-1deg", "3deg", "-2deg", "1.5deg", "-2.5deg", "2.5deg"];
@@ -258,8 +258,10 @@ function render() {
     document.querySelector("#cert .kicker").textContent = `${first}'s certificate`;
   }
   if (FILM_URL) {
-    $("film").outerHTML = `<a class="film" id="film" href="${esc(FILM_URL)}" target="_blank" rel="noopener">${$("film").innerHTML}</a>`;
-    $("film-h").textContent = "Watch the film";
+    const vid = FILM_URL.match(/(?:youtu\.be\/|v=|shorts\/)([\w-]{11})/)?.[1];
+    const thumb = vid ? `<div class="ph" style="filter:brightness(.7);background:center / cover no-repeat url('https://i.ytimg.com/vi/${vid}/hqdefault.jpg')"></div><div class="btn" aria-hidden="true"></div>` : $("film").innerHTML;
+    $("film").outerHTML = `<a class="film" id="film" href="${esc(FILM_URL)}" target="_blank" rel="noopener" aria-label="Watch the CSE-8 Rewind on YouTube">${thumb}</a>`;
+    $("film-h").textContent = "The CSE-8 Rewind";
     $("film-p").textContent = "Every photo and video the class sent, cut into one film.";
   }
   rescan();
